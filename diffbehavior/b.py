@@ -1,4 +1,5 @@
 from typing import List
 
-def cut2(a: List[int], i: int) -> None:
-  a[:] = a[:i] + a[i+1:]
+def increment_list_refactored(a: List[int]) -> None:
+  for i in range(len(a)):
+    a[i] += 1

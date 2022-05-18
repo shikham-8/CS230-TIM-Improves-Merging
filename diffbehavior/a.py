@@ -1,4 +1,8 @@
 from typing import List
 
-def cut1(a: List[int], i: int) -> None:
-  a[i:i+1] = []
+def increment_list(a: List[int]) -> None:
+  a_length = len(a)
+  for i in range(a_length):
+    a.append(a[i] + 1)
+  for i in range(a_length):
+    a.pop(0)
