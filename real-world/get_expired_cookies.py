@@ -38,6 +38,8 @@ Item = Tuple[str, Any]
 Items = List[Item]
 T = TypeVar("T")
 
+###### added dictionary type below ######
+
 
 class dictionary:
     x: int
