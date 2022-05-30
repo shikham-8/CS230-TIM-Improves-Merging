@@ -1,0 +1,4 @@
+8a9,11
+> 
+> def new_function() -> None:
+>   print("Hello")
