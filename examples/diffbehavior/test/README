@@ -1,0 +1,3 @@
+Doesn't do well with super/subclass heirarchies. The superclass here is Obj which is defined in obj.py. We have two subclasses, both named A, one defined in a.py and one defined in b.py. There are four functions, a.foo which accepts type Obj, a.bar which accepts type a.A, b.foo which accepts type Obj and b.bar which accepts type b.A. a.A and b.A differ in implementation slightly. Each function body is the exact same.
+
+Weirdly, diffbehavior thinks that the two bar functions are the same despite them acting differently on the same input. It throws errors whenever an Obj is allowed.
