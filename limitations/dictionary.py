@@ -1,13 +1,3 @@
-# from typing import List
-
-# def average(numbers: List[float]) -> float:
-#     '''
-#     pre: len(numbers) >= 0
-#     post: min(numbers) <= __return__ <= max(numbers)
-#     '''
-#     return sum(numbers) / len(numbers)
-
-
 ####################
 # This code is from HTTPie, an open source HTTP client
 # It is being used for the purposes of testing crosshair tools
@@ -15,6 +5,7 @@
 # This example focuses on dictionaries and custom types
 #####################
 from inspect import _void
+from math import floor, sqrt, log10
 import os
 import base64
 import json
@@ -30,15 +21,17 @@ from contextlib import contextmanager
 from http.cookiejar import parse_ns_headers
 from pathlib import Path
 from pprint import pformat
+from types import FunctionType
 from urllib.parse import urlsplit
-from typing import Any, List, Optional, Tuple, Generator, Callable, Iterable, IO, TypeVar, Mapping
+from typing import Any, Dict, List, Optional, Tuple, Generator, Callable, Iterable, IO, TypeVar, Mapping
+
 
 RE_COOKIE_SPLIT = re.compile(r', (?=[^ ;]+=)')
 Item = Tuple[str, Any]
 Items = List[Item]
 T = TypeVar("T")
 
-###### added dictionary type below ######
+###### added dictionary type below -- need this for crosshair to succeed ######
 
 
 class dictionary:
@@ -55,6 +48,7 @@ def dictionary_test(d: dictionary) -> int:
         return 3
 
 
+# HTTPie real-world example for dictionaries
 def split_cookies(cookies):
     """
     When ``requests`` stores cookies in ``response.headers['Set-Cookie']``
@@ -110,3 +104,5 @@ def _max_age_to_expires(cookies: dict, now: float) -> _void:
         max_age = cookie.get('max-age')
         if max_age and max_age.isdigit():
             cookie['expires'] = now + float(max_age)
+
+# run: crosshair cover dictionary.<functionName>
