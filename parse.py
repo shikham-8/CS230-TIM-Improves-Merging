@@ -1,5 +1,6 @@
 # file to parse all files and callables --> bash script to run crosshair
 
+import time
 import generated_tests as gt
 import os
 import stat
@@ -84,22 +85,27 @@ def runCrosshair():
     g = open("tmp/crosshair-results.out", "r")
     h = open("generated_tests.py", "a")
     # h.write("def tests()")
-    h.write(g.read())
+    for line in g.readlines():
+        h.write("print(" + line + ")\n")
     h.write("print('done')")
     g.close()
     h.close()
 
 
 def shellScriptExecute():
+    if "execute.sh" in os.listdir("."):
+        os.remove("execute.sh")
     f = open("execute.sh", "a")
-    f.write("#!bin/bash\n")
+    os.chmod("execute.sh", stat.S_IREAD | stat.S_IEXEC | stat.S_IWRITE)
+    f.write("#!/bin/bash\n")
     f.write("python3 generated_tests.py > output.txt")
-    f.close()
+    # f.close()
 
 
 writeTestFile(parseMyBranch())
 runCrosshair()
 shellScriptExecute()
-subprocess.call("execute.sh")
+time.sleep(1)
+subprocess.call("./execute.sh")
 
 # cleanup()
