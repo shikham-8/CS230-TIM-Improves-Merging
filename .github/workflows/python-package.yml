@@ -34,13 +34,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-          with:
-            ref: ci_integration
+        with:
+          ref: ci_integration
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-     
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
