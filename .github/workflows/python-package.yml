@@ -25,7 +25,7 @@ jobs:
           name: main-log
           path: main-test.log
   buildbranch:
-    needs: buildmain
+    # needs: buildmain
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
