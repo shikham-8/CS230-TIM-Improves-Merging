@@ -22,12 +22,18 @@ jobs:
       - name: Run main branch
         run: |
           python3 parse.py main
+          cat generated_tests.py > main_tests.py
           python3 generated_tests.py > mainoutput.log
       - name: Upload output file
         uses: actions/upload-artifact@v3
         with:
           name: main-output
           path: mainoutput.log
+      - name: Upload main branch's tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: main-tests
+          path: main_tests.py
 
   buildbranch:
     needs: buildmain
@@ -48,10 +54,13 @@ jobs:
       - name: Dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Download main branch test artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main-tests
       - name: Run individual branch
         run: |
-          python3 parse.py ${{ github.ref }}
-          python3 generated_tests.py > branchoutput.log
+          python3 main_tests.py > branchoutput.log
       - name: Upload output file
         uses: actions/upload-artifact@v3
         with:
