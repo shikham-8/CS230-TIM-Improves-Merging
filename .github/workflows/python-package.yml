@@ -25,7 +25,7 @@ jobs:
           name: main-log
           path: main-test.log
   buildbranch:
-    # needs: buildmain
+    needs: buildmain
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ci_integration
+          ref: github.ref
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
