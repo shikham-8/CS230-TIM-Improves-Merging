@@ -19,9 +19,9 @@ jobs:
       - name: Dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Output test
+      - name: Run main branch
         run: |
-          python3 parse.py
+          python3 parse.py main
           python3 generated_tests.py > mainoutput.log
       - name: Upload output file
         uses: actions/upload-artifact@v3
@@ -45,8 +45,40 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: main-output
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run individual branch
+        run: |
+          python3 parse.py ${{ github.ref }}
+          python3 generated_tests.py > branchoutput.log
+       - name: Upload output file
+         uses: actions/upload-artifact@v3
+         with:
+          name: branch-output
+          path: branchoutput.log
+  
+  comparediffs:
+    needs: buildbranch
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+      steps:
+        - name: Download main branch artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: main-output
+        - name: Download individual branch artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: branch-output
+        - name: Compare diffs
+          run: |
+            LINES = `diff mainoutput.log branchoutput.log | wc -l`
+            if [ "$LINES" -gt 0 ]; then 
+              echo "Semantic merge conflict!"
+            else 
+              echo "No semantic merge conflict"
+            fi

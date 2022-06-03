@@ -7,10 +7,11 @@ import stat
 import api
 import shutil
 import subprocess
+import sys
 
 
-def parseMyBranch():
-    mainCommit = api.getMostRecentMyBranchCommit()
+def parseMyBranch(branch):
+    mainCommit = api.getMostRecentCommit(branch)
     mainCommitFiles = api.getFilesInCommit(mainCommit["sha"])
     # list of module.functions for main branch
     mainCommitFilesAndFunctions = api.getCallableItems(mainCommitFiles)
@@ -102,8 +103,15 @@ def shellScriptExecute():
     # f.close()
 
 
-writeTestFile(parseMyBranch())
-runCrosshair()
+def main(argv):
+    branch_name = argv[1]
+    print(branch_name)
+    writeTestFile(parseMyBranch(branch_name))
+    runCrosshair()
+
+
+if __name__ == "__main__":
+    main(sys.argv)
 # shellScriptExecute()
 # time.sleep(1)
 # subprocess.call("./execute.sh")
