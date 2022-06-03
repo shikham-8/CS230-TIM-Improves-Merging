@@ -18,12 +18,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Output test
         run: |
-          python3 helloworld.py > main-test.log
+          python3 parse.py
+          python3 generated_tests.py > mainoutput.log
       - name: Upload output file
         uses: actions/upload-artifact@v3
         with:
-          name: main-log
-          path: main-test.log
+          name: main-output
+          path: mainoutput.log
+
   buildbranch:
     needs: buildmain
     runs-on: ubuntu-latest
@@ -44,4 +46,4 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: main-log
+          name: main-output

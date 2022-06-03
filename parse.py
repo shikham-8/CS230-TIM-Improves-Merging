@@ -104,8 +104,8 @@ def shellScriptExecute():
 
 writeTestFile(parseMyBranch())
 runCrosshair()
-shellScriptExecute()
-time.sleep(1)
-subprocess.call("./execute.sh")
+# shellScriptExecute()
+# time.sleep(1)
+# subprocess.call("./execute.sh")
 
 # cleanup()
