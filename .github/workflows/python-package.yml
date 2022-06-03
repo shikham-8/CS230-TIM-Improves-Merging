@@ -24,8 +24,3 @@ jobs:
         with:
           name: main-log
           path: main-test.log
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-          with:
-            name: main-log
-            needs: Upload output file
