@@ -77,7 +77,7 @@ jobs:
           name: branch-output
       - name: Compare diffs
         run: |
-          LINES = `diff mainoutput.log branchoutput.log | wc -l`
+          LINES=`diff mainoutput.log branchoutput.log | wc -l`
           if [ "$LINES" -gt 0 ]; then
             echo "Semantic merge conflict!"
           else
