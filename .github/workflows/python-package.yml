@@ -29,34 +29,34 @@ jobs:
           name: main-output
           path: mainoutput.log
 
-  # buildbranch:
-  #   needs: buildmain
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       python-version: ["3.8", "3.9", "3.10"]
+  buildbranch:
+    needs: buildmain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ github.ref }}
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v3
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Dependencies
-  #       run: |
-  #         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  #     - name: Run individual branch
-  #       run: |
-  #         python3 parse.py ${{ github.ref }}
-  #         python3 generated_tests.py > branchoutput.log
-  #      - name: Upload output file
-  #        uses: actions/upload-artifact@v3
-  #        with:
-  #         name: branch-output
-  #         path: branchoutput.log
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run individual branch
+        run: |
+          python3 parse.py ${{ github.ref }}
+          python3 generated_tests.py > branchoutput.log
+      - name: Upload output file
+        uses: actions/upload-artifact@v3
+        with:
+          name: branch-output
+          path: branchoutput.log
 
   # comparediffs:
   #   needs: buildbranch
