@@ -58,27 +58,27 @@ jobs:
           name: branch-output
           path: branchoutput.log
 
-  # comparediffs:
-  #   needs: buildbranch
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       python-version: ["3.8", "3.9", "3.10"]
-  #     steps:
-  #       - name: Download main branch artifact
-  #         uses: actions/download-artifact@v3
-  #         with:
-  #           name: main-output
-  #       - name: Download individual branch artifact
-  #         uses: actions/download-artifact@v3
-  #         with:
-  #           name: branch-output
-  #       - name: Compare diffs
-  #         run: |
-  #           LINES = `diff mainoutput.log branchoutput.log | wc -l`
-  #           if [ "$LINES" -gt 0 ]; then
-  #             echo "Semantic merge conflict!"
-  #           else
-  #             echo "No semantic merge conflict"
-  #           fi
+  comparediffs:
+    needs: buildbranch
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+      steps:
+        - name: Download main branch artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: main-output
+        - name: Download individual branch artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: branch-output
+        - name: Compare diffs
+          run: |
+            LINES = `diff mainoutput.log branchoutput.log | wc -l`
+            if [ "$LINES" -gt 0 ]; then
+              echo "Semantic merge conflict!"
+            else
+              echo "No semantic merge conflict"
+            fi
