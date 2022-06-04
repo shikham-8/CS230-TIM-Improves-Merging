@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple, Generator, Callable, Iterab
 
 
 def lambdaFn(a: Callable[[int], int]):
-    if not a:
+    if a:
         return a(2) + 4
     else:
         return "hello"
