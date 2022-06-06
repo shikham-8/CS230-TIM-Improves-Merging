@@ -1,9 +1,10 @@
 from typing import List
 
 
-def increment_list(a: List[int]) -> None:
-    a_length = len(a)
-    for i in range(a_length):
-        a.append(a[i] + 1)
-    for i in range(a_length):
-        a.pop(0)
+def increment_list(a: List[int]) -> List[int]:
+    i = 0
+    j = 0
+    while i < len(a) - 1:
+        a[i] += 1
+        i += 1
+    return a
