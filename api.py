@@ -28,8 +28,8 @@ def setRefactoringChange(ref: bool):
     globalVariables["REFACTOR"] = ref
 
 
-def getMostRecentMainCommit():
-    url = f"https://api.github.com/repos/{OWNER}/{REPOSITORY_NAME}/commits/{BRANCH_TO_MERGE_TO}"
+def getMostRecentCommit(branch):
+    url = f"https://api.github.com/repos/{OWNER}/{REPOSITORY_NAME}/commits/{branch}"
     user_data = requests.get(url).json()
     return user_data
 
@@ -39,12 +39,6 @@ def checkRefactoringCommit(commitObject):
         setRefactoringChange(True)
     else:
         setRefactoringChange(False)
-
-
-def getMostRecentMyBranchCommit():
-    url = f"https://api.github.com/repos/{OWNER}/{REPOSITORY_NAME}/commits/{MY_BRANCH}"
-    user_data = requests.get(url).json()
-    return user_data
 
 
 def getFilesInCommit(commitSHA):

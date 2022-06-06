@@ -1,0 +1,155 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  buildmain:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run main branch
+        run: |
+          python3 parse.py main
+          cat generated_tests.py > main_tests.py
+      - name: Upload main branch's tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: main-tests
+          path: main_tests.py
+
+  buildbranch:
+    needs: buildmain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Generate branch's tests
+        run: |
+          python3 parse.py ${{ github.ref }}
+          cat generated_tests.py > branch_tests.py
+      - name: Upload output file - branch tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: branch-tests
+          path: branch_tests.py
+
+  runmain:
+    needs: buildbranch
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps: 
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Download main branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main-tests
+      - name: Download individual branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: branch-tests
+      - name: Run main branch on both tests
+        run: |
+          python3 main_tests.py > main_results.log
+          python3 branch_tests.py >> main_results.log
+      - name: Upload main branch's output
+        uses: actions/upload-artifact@v3
+        with:
+          name: main-results
+          path: main_results.log
+
+  runbranch:
+    needs: runmain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps: 
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Download main branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main-tests
+      - name: Download individual branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: branch-tests
+      - name: Run branch on both tests
+        run: |
+          python3 main_tests.py > branch_results.log
+          python3 branch_tests.py >> branch_results.log
+      - name: Upload branch's results
+        uses: actions/upload-artifact@v3
+        with:
+          name: branch-results
+          path: branch_results.log
+  
+  comparediffs:
+    needs: runbranch
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download main branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main-results
+      - name: Download individual branch artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: branch-results
+      - name: Compare diffs
+        run: |
+          LINES=`diff main_results.log branch_results.log | wc -l`
+          if [ "$LINES" -gt 0 ]; then
+            echo "Semantic merge conflict!"
+          else
+            echo "No semantic merge conflict"
+          fi
