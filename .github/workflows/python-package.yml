@@ -127,6 +127,7 @@ jobs:
         with:
           name: branch-results
           path: branch_results.log
+  
   comparediffs:
     needs: runmain, runbranch
     runs-on: ubuntu-latest
