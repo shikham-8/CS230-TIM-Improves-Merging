@@ -14,5 +14,5 @@ TIM (TIM Improves Merging) is a semantic merge conflict detection tool meant to 
 When pushing to a repository with TIM enabled within its CI pipeline, creating a pull request (PR) will automatically run TIM on the changes within that pull request. This is how tests can be run to detect semantic merge conflicts within different code changes.
 
 ## Other Artifacts
-- To view our paper in PDF form, click here. (TODO: add link)
+- To view our paper in PDF form, click [here](CS_230_TIM_Report.pdf).
 - To view our presentation slides, click [here](https://docs.google.com/presentation/d/1ibokW80MXj-DZi27X6R9uHm20_Yic9f7okf_Hoz8tyk/edit?usp=sharing).
