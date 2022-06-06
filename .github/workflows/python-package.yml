@@ -36,7 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
-
+    
     steps:
       - uses: actions/checkout@v3
         with:
@@ -52,14 +52,14 @@ jobs:
         run: |
           python3 parse.py ${{ github.ref }}
           cat generated_tests.py > branch_tests.py
-       - name: Upload output file - branch tests
-         uses: actions/upload-artifact@v3
-         with:
+      - name: Upload output file - branch tests
+        uses: actions/upload-artifact@v3
+        with:
           name: branch-tests
           path: branch_tests.py
 
   runmain:
-    needs: buildmain, buildbranch
+    needs: buildbranch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -93,7 +93,7 @@ jobs:
           path: main_results.log
 
   runbranch:
-    needs: buildmain, buildbranch, runmain
+    needs: runmain
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -129,7 +129,7 @@ jobs:
           path: branch_results.log
   
   comparediffs:
-    needs: runmain, runbranch
+    needs: runbranch
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
